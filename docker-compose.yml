@@ -1,0 +1,11 @@
+version: '2.1'
+services:   
+    app:    
+        restart: always    
+        build: .    
+        ports:      
+            - 80:80  
+        volumes:      
+            - .:/app
+        environment:
+            - DEBUG=1
