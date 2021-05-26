@@ -6,4 +6,9 @@ general = Blueprint("general", __name__)  # initialize blueprint
 # function that is called when you visit /
 @general.route("/")
 def index():
-    return "Success" 
+    return "Hit"
+
+
+@general.route("/api/health-check")
+def health_check():
+    return "Success."
