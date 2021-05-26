@@ -12,6 +12,7 @@ MONGODB_USERNAME = os.getenv('MONGODB_PROD_USERNAME')
 MONGODB_PASSWORD = os.getenv('MONGODB_PROD_PASSWORD')
 
 S3_BUCKET_NAME = os.getenv('S3_BUCKET_PROD_NAME')
+S3_REGION = os.getenv('S3_REGION')
 
 
 #s3 bucket access

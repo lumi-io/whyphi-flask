@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 from bson.objectid import ObjectId
 from api.validators.application import validate_application
-from api import mongo
+from api import mongo, app
 import boto3
 from botocore.exceptions import ClientError, WaiterError
 import json
@@ -11,12 +11,12 @@ application = Blueprint("application", __name__)  # initialize blueprint
 applications = mongo.db.applications
 
 # Parameters for S3 bucket
-BUCKET = 'resume-testing-ats'
-REGION = 'us-east-2'
-s3_client = boto3.client('s3')
+BUCKET = app.config["S3_BUCKET_NAME"]
+REGION = app.config["S3_REGION"]
+s3_client = boto3.client("s3")
 
 
-def return_exception(e):
+def _return_exception(e):
     response_object = {
         "status": False,
         "message": str(e)
@@ -42,7 +42,7 @@ def upload_resume(posting_id, acl="public-read"):
         return f"https://{BUCKET}.s3.{REGION}.amazonaws.com/" + posting_id + "/resume/{}".format(filename)
     except Exception as e:
         print(e)
-        return make_response(return_exception(ClientError), 400)
+        return make_response(_return_exception(ClientError), 400)
 
 
 @application.route('/user/portal/upload-image/<posting_id>', methods=['POST'])
@@ -62,7 +62,7 @@ def upload_image(posting_id, acl="public-read"):
         )
         return f"https://{BUCKET}.s3.{REGION}.amazonaws.com/" + posting_id + "/profile-pic/{}".format(filename)
     except:
-        return make_response(return_exception(ClientError), 400)
+        return make_response(_return_exception(ClientError), 400)
 
 @application.route('/user/portal/upload-video/<posting_id>', methods=['POST'])
 def upload_video(posting_id, acl="public-read"):
@@ -81,7 +81,7 @@ def upload_video(posting_id, acl="public-read"):
         )
         return f"https://{BUCKET}.s3.{REGION}.amazonaws.com/" + posting_id + "/elevator-pitch/{}".format(filename)
     except:
-        return make_response(return_exception(ClientError), 400)
+        return make_response(_return_exception(ClientError), 400)
 
 
 # @application.route('/user/applications/upload', methods=['POST'])
@@ -99,7 +99,7 @@ def upload(resume_file, profile_pic_file, video_file, acl="public-read"):
                     "ContentType": file.content_type
                 })
         except Exception as e:
-            return make_response(return_exception(e), 400)
+            return make_response(_return_exception(e), 400)
     if profile_pic_file:
         try:
             file = profile_pic_file
@@ -112,7 +112,7 @@ def upload(resume_file, profile_pic_file, video_file, acl="public-read"):
                     "ContentType": file.content_type
                 })
         except Exception as e:
-            return make_response(return_exception(e), 400)
+            return make_response(_return_exception(e), 400)
     if video_file:
         try:
             file = video_file
@@ -130,7 +130,7 @@ def upload(resume_file, profile_pic_file, video_file, acl="public-read"):
             }
             return make_response(jsonify(response_object), 200)
         except Exception as e:
-            return make_response(return_exception(e), 400)
+            return make_response(_return_exception(e), 400)
     else:
         response_object = {
             "status": False,
@@ -149,7 +149,7 @@ def delete_all(bucket_name):
             s3_client.delete_objects(Bucket=bucket_name, Key=file["Key"])
 
     except Exception as e:
-        return make_response(return_exception(e), 400)
+        return make_response(_return_exception(e), 400)
 
 
 def update_filenames(posting_id, applicant_id, urls):
@@ -188,4 +188,4 @@ def submit_application(posting_id):
         return make_response(jsonify(response_object), 200)
 
     except Exception as e:
-        return make_response(return_exception(e), 400)
+        return make_response(_return_exception(e), 400)

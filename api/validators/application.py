@@ -25,9 +25,9 @@ application_schema = {
         "major": {
             "type": "string"
         },
-        # "minor": {
-        #     "type": "string"
-        # },
+        "minor": {
+            "type": "string"
+        },
         "linkedin": {
             "type": "string"
         },
