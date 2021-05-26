@@ -64,13 +64,6 @@ def create_posting():
     except Exception as e:
         return make_response(_return_exception(e), 400)
 
-    # else:
-    #     response_object = {
-    #         "status": False,
-    #         "message": 'Bad request parameters: {}'.format(data['message'])
-    #     }
-    #     return make_response(jsonify(response_object), 200)
-
 
 @job_post.route('/admin/postings', methods=['GET'])
 def read_all_postings():
