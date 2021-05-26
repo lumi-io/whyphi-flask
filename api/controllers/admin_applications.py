@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, make_response
 from bson.objectid import ObjectId
-from api.validators.job_post import validate_job
+from api.validators.admin_postings import validate_create_posting_schema
 from api import mongo
 
 admin_applications = Blueprint(

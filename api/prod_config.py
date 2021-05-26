@@ -11,6 +11,9 @@ MONGODB_PORT = int(os.getenv('MONGODB_PROD_PORT'))
 MONGODB_USERNAME = os.getenv('MONGODB_PROD_USERNAME')
 MONGODB_PASSWORD = os.getenv('MONGODB_PROD_PASSWORD')
 
+S3_BUCKET_NAME = os.getenv('S3_BUCKET_PROD_NAME')
+
+
 #s3 bucket access
 S3_KEY = os.getenv("AWS_KEY")
 S3_BUCKET= 'resume-testing-ats'

@@ -11,6 +11,7 @@ MONGODB_HOST = os.getenv('MONGODB_HOST')
 MONGODB_PORT = int(os.getenv('MONGODB_PORT'))
 MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')
 MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
+S3_BUCKET_NAME = os.getenv('S3_BUCKET_DEV_NAME')
 
 #s3 bucket access
 S3_KEY = os.getenv("AWS_KEY")
