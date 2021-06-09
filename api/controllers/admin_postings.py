@@ -160,7 +160,10 @@ def delete_specific_posting(posting_id):
         deleted_doc = postings.delete_one(
             {"_id": ObjectId(posting_id)}
         )
-        if deleted_doc is None:
+        deleted_applications = applications.delete_one(
+            {"postingKey": ObjectId(posting_id)}
+        )
+        if (deleted_doc is None) and (deleted_applications is None):
             response_object = {
                 "status": False,
                 "message": 'Posting with id ' + posting_id + ' not found.'
