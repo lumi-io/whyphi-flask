@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, make_response
 from bson.objectid import ObjectId
 from api.validators.admin_postings import validate_create_posting_schema
 from api import mongo, app
+import logging
 
 import json
 import boto3
@@ -9,6 +10,7 @@ import boto3
 job_post = Blueprint("job_post", __name__)  # initialize blueprint
 postings = mongo.db.postings
 applications = mongo.db.applications
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 S3_BUCKET_NAME = app.config["S3_BUCKET_NAME"]
 
@@ -156,26 +158,55 @@ def edit_specific_posting(posting_id):
 def delete_specific_posting(posting_id):
     """ Endpoint that deletes a specific posting """
     try:
+        # Checks if postings and applications document with given id exists
+        postingsExist = postings.find_one({"_id": ObjectId(posting_id)})
+        applicationsExist = applications.find_one(
+            {"postingKey": ObjectId(posting_id)})
+
+        if not applicationsExist or not postingsExist:
+            response_object = {
+                "status": False,
+                "message": 'Applications and/or Postings with ' + posting_id + ' not found.'
+            }
+            logging.warning("Application and/or Postings with " +
+                            str(posting_id) + " not found.")
+            return make_response(jsonify(response_object), 404)
+
         # Finds and deletes posting doc with given id
-        deleted_doc = postings.delete_one(
+        deleted_postings_doc = postings.delete_one(
             {"_id": ObjectId(posting_id)}
         )
-        if deleted_doc is None:
+        if deleted_postings_doc is None:
             response_object = {
                 "status": False,
                 "message": 'Posting with id ' + posting_id + ' not found.'
             }
             return make_response(jsonify(response_object), 404)
+        logging.info("Deleted postings document.")
+
+        deleted_applications_doc = applications.delete_one(
+            {"postingKey": ObjectId(posting_id)}
+        )
+        if deleted_applications_doc is None:
+            response_object = {
+                "status": False,
+                "message": 'Application with id ' + posting_id + ' not found.'
+            }
+            return make_response(jsonify(response_object), 404)
+        logging.info("Deleted applications document.")
 
         # Deletes folder and objects in the S3 bucket corresponding to a posting
         s3 = boto3.resource('s3')
         folder_name = str(posting_id)
         s3.Bucket(S3_BUCKET_NAME).objects.filter(Prefix=folder_name).delete()
+        logging.info("Deleted associated S3 Bucket.")
 
         response_object = {
             "status": True,
             "message": 'Posting deleted.'
         }
+        logging.info("Deleted all resources related to id: " +
+                     str(posting_id) + ".")
         return make_response(jsonify(response_object), 200)
 
     except Exception as e:
