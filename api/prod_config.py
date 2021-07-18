@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+FLASK_ENV = 'production'
 
 MONGODB_DB = os.getenv('MONGODB_PROD_DB')
 MONGODB_HOST = os.getenv('MONGODB_PROD_HOST')
