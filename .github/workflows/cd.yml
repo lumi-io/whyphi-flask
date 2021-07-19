@@ -19,6 +19,13 @@ jobs:
             sudo apt update
             apt-get update
             pip install wheel
+            mkdir ~/.aws
+            echo "[default]
+            output = json
+            region = ${{secrets.AWS_REGION}}" > ~/.aws/config
+            echo "[default]
+            aws_access_key_id = ${{secrets.AWS_ACCESS_KEY}}
+            aws_secret_access_key = ${{secrets.AWS_SECRET_KEY}}" > ~/.aws/credentials
             mkdir ~/flaskapp
             cd ~/flaskapp
             git clone https://git@github.com/lumi-io/whyphi-flask.git
