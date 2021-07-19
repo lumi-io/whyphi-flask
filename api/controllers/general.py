@@ -12,3 +12,8 @@ def index():
 @general.route("/api/health-check")
 def health_check():
     return "Success."
+
+@general.route("/api/test")
+def health_check():
+    return "deployment script worked."
+
