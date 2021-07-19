@@ -66,7 +66,7 @@ def submit_application(posting_id):
             "status": False,
             "message": 'Issues with AWS S3. Please contact administrator.'
         }
-        return make_response(_return_exception(e), 400)
+        return make_response(_return_exception(error), 400)
         
     except Exception as e:
         logging.warning(e)
