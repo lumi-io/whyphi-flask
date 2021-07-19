@@ -1,0 +1,36 @@
+name: Deploy to Digitalocean
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Deploy Whyphi Flask App
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{secrets.SSH_HOST}}
+          key: ${{secrets.SSH_KEY}}
+          username: ${{secrets.SSH_USERNAME}}
+          passphrase: ${{secrets.SSH_PASSPHRASE}}
+        
+          script: |
+            sudo apt update
+            apt-get update
+            pip install wheel
+            mkdir ~/flaskapp
+            cd ~/flaskapp
+            git clone https://git@github.com/lumi-io/whyphi-flask.git
+            cd whyphi-flask
+            git pull
+            virtualenv venv
+            pipenv run pip freeze > requirements.txt
+            source venv/bin/activate
+            pip install gunicorn
+            pip install -r requirements.txt
+            # sudo systemctl restart app
+            # sudo systemctl enable app
+
