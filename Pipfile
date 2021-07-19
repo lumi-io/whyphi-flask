@@ -21,6 +21,7 @@ dnspython = "*"
 boto3 = "*"
 flask-cors = "*"
 pypdf2 = "*"
+authlib = "*"
 
 [requires]
 python_version = "3.7"
