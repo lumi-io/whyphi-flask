@@ -4,8 +4,10 @@ from api.validators.application import validate_application
 from api import mongo, app
 import boto3
 from botocore.exceptions import ClientError, WaiterError
+import botocore
 import json
 from time import time, ctime
+import logging
 
 from api.middlewares.application import decode_and_upload_base64_file, get_file_extension, parse_graduation_date
 
