@@ -1,7 +1,5 @@
 name: Deploy to Digitalocean
 on:
-  pull_request:
-    branches: [ master ]
   push:
     branches: [ master ]
 
