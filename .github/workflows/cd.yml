@@ -24,11 +24,14 @@ jobs:
             git clone https://git@github.com/lumi-io/whyphi-flask.git
             cd whyphi-flask
             git pull
-            virtualenv venv
+            pipenv shell
             pipenv run pip freeze > requirements.txt
+            exit
+            virtualenv venv
             source venv/bin/activate
             pip install gunicorn
             pip install -r requirements.txt
-            # sudo systemctl restart app
-            # sudo systemctl enable app
+            deactivate
+            sudo systemctl restart whyphi-flask
+            sudo systemctl enable whyphi-flask
 
