@@ -1,13 +1,11 @@
-run-container:
-	docker stop testing_container || true && docker rm testing_container || true
-	docker build -t testing_container tests
-	docker run -d --name=testing_container -p 80:80 testing_container
+run-dev-container:
+	docker stop dev-container || true && docker rm dev-container || true
+	docker run -d --name=dev-container -p 80:80 dev-container
 
-test-container: run-container
-	pipenv run pytest
-
-start-dev-container:
-	docker-compose -f ./docker-compose.yml up
+rebuild-and-run-dev-container:
+	docker stop dev-container || true && docker rm dev-container || true
+	docker build -t dev-container .
+	docker run -d --name=dev-container -p 80:80 dev-container
 
 stop-dev-container:
-	docker-compose -f ./docker-compose.yml down
+	docker stop dev-container || true && docker rm dev-container || true

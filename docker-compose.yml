@@ -9,3 +9,4 @@ services:
             - .:/app
         environment:
             - DEBUG=1
+            - PYTHONPATH=/
