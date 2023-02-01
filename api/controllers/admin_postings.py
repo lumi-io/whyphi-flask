@@ -64,6 +64,7 @@ def create_posting():
         }
         return make_response(jsonify(response_object), 200)
     except Exception as e:
+        print(e)
         return make_response(_return_exception(e), 400)
 
 
@@ -150,7 +151,6 @@ def edit_specific_posting(posting_id):
         return make_response(jsonify(response_object), 200)
 
     except Exception as e:
-        print(e)
         return make_response(_return_exception(e), 400)
 
 

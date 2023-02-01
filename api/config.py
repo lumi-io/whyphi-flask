@@ -26,6 +26,9 @@ AUTH0_API_BASE_URL = os.getenv('AUTH0_API_BASE_URL')
 AUTH0_ACCESS_TOKEN_URL = os.getenv('AUTH0_ACCESS_TOKEN_URL')
 AUTH0_AUTHORIZE_URL = os.getenv('AUTH0_AUTHORIZE_URL')
 
+#Andrew's MongoDB URI
+ANDREW_MONGODB_URI = os.getenv('ANDREW_MONGODB_URI')
+
 # class ProdConfig(Config):
 #     FLASK_ENV = 'production'
 #     DEBUG = False

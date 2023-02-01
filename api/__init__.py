@@ -7,6 +7,7 @@ from flask_cors import CORS
 from bson.objectid import ObjectId
 from authlib.integrations.flask_client import OAuth
 from six.moves.urllib.parse import urlencode
+from pymongo import MongoClient
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -25,6 +26,7 @@ class JSONEncoder(json.JSONEncoder):
 # Objects and Instances to be used in other files are placed here
 mongo = PyMongo()
 app = Flask(__name__)
+andrewMongo = MongoClient() #andrew's mongodb setup
 CORS(app, supports_credentials=True)
 oauth = OAuth(app)
 auth0 = None
@@ -45,6 +47,7 @@ def create_app(test_config=False):
             app.config.from_pyfile('prod_config.py')
 
     configure_mongo_uri(app, test_config)  # MongoDB configuration
+    andrew_configure_mongo_uri(app, test_config)  # Andrew's MongoDB configuration
     register_blueprints(app)  # Registering blueprints to Flask App
     auth0 = oauth.register(
         'auth0',
@@ -76,6 +79,14 @@ def configure_mongo_uri(app, test_config):
     except Exception as e:
         print(e)
 
+def andrew_configure_mongo_uri(app, test_config):
+    """ Helper function to configure MongoDB URI """
+    andrewMongo = MongoClient(app.config['ANDREW_MONGODB_URI'])
+
+    try:
+        print("Andrew's MongoDB connected.")
+    except Exception as e:
+        print(e)
 
 def register_blueprints(app):
     """ Helper function to register blueprints into Flask App """
@@ -84,6 +95,7 @@ def register_blueprints(app):
     from api.controllers.admin_applications import admin_applications
     from api.controllers.general import general
     from api.controllers.auth import auth
+    from api.controllers.user_postings import user_postings
 
     print("Registering Flask Blueprints.")
     app.register_blueprint(general)
@@ -91,6 +103,7 @@ def register_blueprints(app):
     app.register_blueprint(application)
     app.register_blueprint(admin_applications)
     app.register_blueprint(auth)
+    app.register_blueprint(user_postings)
 
     # register error Handler
     # app.register_error_handler(Exception, all_exception_handler)

@@ -8,7 +8,6 @@ general = Blueprint("general", __name__)  # initialize blueprint
 def index():
     return "Hit"
 
-
 @general.route("/api/health-check")
 def health_check():
     return "Success."

@@ -110,13 +110,20 @@ def upload_base64_file(data, bucket_name, file_name):
         logging.error(e)
 
     try:
+        
+        print("testing...", app.config["S3_KEY"], app.config["S3_SECRET"])
+        # print("testing...", app.config[""], app.config["S3_KEY"], app.config["S3_SECRET"])   
         logging.info("Uploading file into s3 bucket.")
-        client = boto3.client('s3')
+        client = boto3.client(
+            's3',
+            aws_access_key_id = app.config["S3_KEY"],
+            aws_secret_access_key = app.config["S3_SECRET"]
+        )
         client.upload_fileobj(
-            io.BytesIO(decoded_file),
-            bucket_name,
-            file_name,
-            ExtraArgs={
+            io.BytesIO(decoded_file),   #File object
+            bucket_name,                #Bucket
+            file_name,                  #Key
+            ExtraArgs={                 #Extra args
                 'ACL': 'public-read',
                 "ContentType": file_extension
             }

@@ -19,7 +19,6 @@ BUCKET = app.config["S3_BUCKET_NAME"]
 REGION = app.config["S3_REGION"]
 s3_client = boto3.client("s3")
 
-
 def _return_exception(e):
     response_object = {
         "status": False,
@@ -43,7 +42,7 @@ def delete_all(bucket_name):
 @application.route('/user/portal/submit/<posting_id>', methods=['POST'])
 def submit_application(posting_id):
     """ Endpoint to append an application to a job posting """
-
+    
     data = request.get_json()
     data["applicantId"] = ObjectId()
     data['timeApplied'] = ctime(time())
@@ -74,15 +73,15 @@ def submit_application(posting_id):
             "status": False,
             "message": e
         }
-        return make_response(_return_exception(e), 400)
+        return make_response(_return_exception(e), 401)
 
     data["resume"] = resume_url
     data["image"] = image_url
 
     try:
-        applications.update(
+        applications.update_one(
             {"postingKey": ObjectId(posting_id)},
-            {"$push": {"applications": data}}
+            {"$push": {"applications": data}},
         )
         response_object = {
             "status": True,
@@ -91,4 +90,5 @@ def submit_application(posting_id):
         return make_response(jsonify(response_object), 200)
 
     except Exception as e:
-        return make_response(_return_exception(e), 400)
+        print("error pushing to mongodb")
+        return make_response(_return_exception(e), 402)
