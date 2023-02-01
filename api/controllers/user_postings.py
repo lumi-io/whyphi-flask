@@ -53,8 +53,8 @@ def create_user_data(user_id):
         return make_response(_return_exception(e), 400)
 
 #get one user's data
-@user_postings.route('/user/data/<user_id>/<posting_id>', methods=['GET'])
-def get_user_data(user_id, posting_id):
+@user_postings.route('/user/data/<data_type>/<user_id>/<posting_id>', methods=['GET'])
+def get_user_data(data_type, user_id, posting_id):
 
     user_posting_data = {}
 
@@ -66,7 +66,7 @@ def get_user_data(user_id, posting_id):
             user_data = {}
 
         elif posting_id in user_data:
-            user_posting_data = user_data[posting_id]
+            user_posting_data = user_data[posting_id][data_type]
 
         response_object = {
             "status": True,
@@ -79,8 +79,8 @@ def get_user_data(user_id, posting_id):
         return make_response(_return_exception(e), 400)
 
 #Updates each user -> posting -> read_list
-@user_postings.route('/user/data/<user_id>/<posting_id>', methods=['POST'])
-def update_user_data(user_id, posting_id):
+@user_postings.route('/user/data/<data_type>/<user_id>/<posting_id>', methods=['POST'])
+def update_user_data(data_type, user_id, posting_id):
     # return make_response(jsonify({"user": user_id, "post": posting_id}))
     
     data = request.get_json()
@@ -88,7 +88,7 @@ def update_user_data(user_id, posting_id):
     try:
         users.update_one(
             {"userKey": user_id},
-            {"$set": { posting_id: data }}, 
+            {"$set": { posting_id: {data_type: data} }}, 
         )
         response_object = {
             "status": True,
