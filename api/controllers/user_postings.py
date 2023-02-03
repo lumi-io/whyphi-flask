@@ -52,15 +52,41 @@ def create_user_data(user_id):
     except Exception as e:
         return make_response(_return_exception(e), 400)
 
-#get one user's data
-@user_postings.route('/user/data/<data_type>/<user_id>/<posting_id>', methods=['GET'])
-def get_user_data(data_type, user_id, posting_id):
+#get one user's all data
+@user_postings.route('/user/data/all/<user_id>/<posting_id>', methods=['GET'])
+def get_user_data_all(user_id, posting_id):
 
     user_posting_data = {}
 
     try:
         user_data = users.find_one({ "userKey": user_id })
+        
+        if not user_data: 
+            users.insert_one({ "userKey": user_id })
+            user_data = {}
 
+        elif posting_id in user_data:
+            user_posting_data = user_data[posting_id]
+
+        response_object = {
+            "status": True,
+            "user_posting_data": user_posting_data,
+            "message": 'User Posting Data Retrieved.'
+        }
+        return make_response(jsonify(response_object), 200)
+
+    except Exception as e:
+        return make_response(_return_exception(e), 400)
+
+#get one user's data for a certain data type
+@user_postings.route('/user/data/<data_type>/<user_id>/<posting_id>', methods=['GET'])
+def get_user_data_one(data_type, user_id, posting_id):
+
+    user_posting_data = {}
+
+    try:
+        user_data = users.find_one({ "userKey": user_id })
+        print(user_data)
         if not user_data: 
             users.insert_one({ "userKey": user_id })
             user_data = {}
@@ -88,7 +114,7 @@ def update_user_data(data_type, user_id, posting_id):
     try:
         users.update_one(
             {"userKey": user_id},
-            {"$set": { posting_id: {data_type: data} }}, 
+            {"$set": { posting_id+"."+data_type: data }}, 
         )
         response_object = {
             "status": True,
